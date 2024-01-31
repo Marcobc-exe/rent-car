@@ -1,0 +1,33 @@
+:root {
+  font-family: Barlow Regular;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@font-face {
+  font-family: Barlow Bold;
+  src: url("./assets/fonts/Barlow-Bold.ttf");
+}
+
+@font-face {
+  font-family: Barlow Italic;
+  src: url("./assets/fonts/Barlow-Italic.ttf");
+}
+
+@font-face {
+  font-family: Barlow Medium;
+  src: url("./assets/fonts/Barlow-Medium.ttf");
+}
+
+@font-face {
+  font-family: Barlow Regular;
+  src: url("./assets/fonts/Barlow-Regular.ttf");
+}
+
+@font-face {
+  font-family: Barlow Thin;
+  src: url("./assets/fonts/Barlow-Thin.ttf");
+}
