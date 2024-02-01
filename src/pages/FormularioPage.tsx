@@ -5,7 +5,6 @@ import {
   ContainerForm,
   ContainerTitle,
   CustomInput,
-  CustomInputForm,
   CustomSpanForm,
   CustomSymbolForm,
   DescFrom,
@@ -18,21 +17,86 @@ import {
   TxtPrueba,
   BtnSubmit,
   CustomSelectForm,
+  CustomOptionSelect,
 } from "../styledComponents/FormularioPageStyled/formularioPageStyled";
 import { EventSelectType, useStateProp } from "../types/react";
 import { modelos } from "../constants/modeloVehiculos";
+import { InputController } from "../components/Inputs/InputController";
+import { useForm } from "react-hook-form";
+import { useAppDispatch, useAppSelector } from "../store";
+import { insertNewcar } from "../store/slices/car";
+import { NAME_ES_REGEX } from "../constants/Regex";
+import { v4 } from 'uuid'
+
+type modelsProps = {
+  id: number;
+  name: string;
+};
+
+type regiterCar = {
+  id: number;
+  nombre: string;
+  rut: number;
+  patente: string;
+  marca: string;
+  modelo: string;
+  color: string;
+  precio: number;
+};
 
 export const FormularioPage = () => {
-  const [marca, setMarca]: useStateProp<string | null> = useState(null)
+  const dispatch = useAppDispatch()
+  const { control, handleSubmit, getValues, reset } = useForm({
+    defaultValues: {
+      nombre: "",
+      rut: 0,
+      patente: "",
+      marca: "",
+      modelo: "",
+      color: "",
+      precio: 0
+    },
+  });
+
+  const [models, setModels]: useStateProp<modelsProps[] | null> =
+    useState(null);
+  const [marca, setMarca]: useStateProp<string> = useState("");
+  const [modelSelected, setModelSelected]: useStateProp<string> =
+    useState("");
+
+  const disabledSelect = models === null ? true : false;
+  const listCars = useAppSelector((state) =>  state.car)
 
   const handleMarcaVehiculo = (event: EventSelectType) => {
     const marca = event.target.value;
-    // modelos[marca]
-    console.log(modelos)
-    console.log(marca)
-    setMarca(marca)
-  }
-  
+    setMarca(marca);
+    setModels(modelos[marca]);
+  };
+
+  const handleModelCar = (event: EventSelectType) => {
+    const model = event.target.value;
+    setModelSelected(model);
+  };
+
+  const handlerRegister = () => {
+    const newCar: regiterCar = {
+      id: listCars.length + 1,
+      nombre: getValues().nombre,
+      rut: getValues().rut,
+      patente: getValues().patente,
+      marca: marca,
+      modelo: modelSelected,
+      color: getValues().color,
+      precio: getValues().precio,
+    };
+
+    reset();
+    setMarca("")
+    setModels(null)
+    setModelSelected("")
+    dispatch(insertNewcar(newCar));
+  };
+
   return (
     <>
       <Container>
@@ -58,14 +122,28 @@ export const FormularioPage = () => {
 
         <FirstRowForm>
           <CustomInput $widthInput={"65%"}>
-            <CustomInputForm type="text" />
+            <InputController
+              control={control}
+              rules={{
+                required: "Campo requerido",
+              }}
+              name="nombre"
+              type="text"
+            />
             <CustomSpanForm>
               Nombre completo<CustomSymbolForm>*</CustomSymbolForm>
             </CustomSpanForm>
           </CustomInput>
 
           <CustomInput $widthInput={"35%"}>
-            <CustomInputForm type="text" />
+            <InputController
+              control={control}
+              rules={{
+                required: "Campo requerido",
+              }}
+              name="rut"
+              type="text"
+            />
             <CustomSpanForm>
               Rut Vendedor<CustomSymbolForm>*</CustomSymbolForm>
             </CustomSpanForm>
@@ -76,19 +154,31 @@ export const FormularioPage = () => {
 
         <SecondRowForm>
           <CustomInput $widthInput={"30%"}>
-            <CustomInputForm type="text" />
+            <InputController
+              control={control}
+              rules={{ required: "Campo requerido" }}
+              name="patente"
+              type="text"
+            />
             <CustomSpanForm>
               Patente del vehículo<CustomSymbolForm>*</CustomSymbolForm>
             </CustomSpanForm>
           </CustomInput>
 
           <CustomInput $widthInput={"30%"}>
-            <CustomSelectForm onChange={handleMarcaVehiculo} name="marcaVehiculo">
-              <option></option>
+            <CustomSelectForm
+              onChange={handleMarcaVehiculo}
+              name="marca"
+              style={{ cursor: "pointer" }}
+            >
+              <CustomOptionSelect
+                selected={true}
+                disabled={true}
+              ></CustomOptionSelect>
               {marcas.map((marca) => (
-                <option key={marca.id} value={marca.name}>
+                <CustomOptionSelect key={marca.id} value={marca.name}>
                   {marca.name}
-                </option>
+                </CustomOptionSelect>
               ))}
             </CustomSelectForm>
             <CustomSpanForm>
@@ -96,29 +186,54 @@ export const FormularioPage = () => {
             </CustomSpanForm>
           </CustomInput>
 
-          <CustomInput $widthInput={"30%"}>
-            <CustomSelectForm name="modeloVehiculo" />
-            <CustomSpanForm>
+          <CustomInput $disabled={disabledSelect} $widthInput={"30%"}>
+            <CustomSelectForm
+              onChange={handleModelCar}
+              disabled={disabledSelect}
+              name="modelo"
+            >
+              <CustomOptionSelect
+                selected={true}
+                disabled={true}
+              ></CustomOptionSelect>
+              {models != null &&
+                models.map((model: modelsProps) => (
+                  <CustomOptionSelect key={model.id} value={model.name}>
+                    {model.name}
+                  </CustomOptionSelect>
+                ))}
+            </CustomSelectForm>
+            <CustomSpanForm $disabled={disabledSelect}>
               Modelo del vehículo<CustomSymbolForm>*</CustomSymbolForm>
             </CustomSpanForm>
           </CustomInput>
 
           <CustomInput $widthInput={"30%"}>
-            <CustomInputForm type="text" />
+            <InputController
+              control={control}
+              rules={{ required: "Campo requerido" }}
+              name="color"
+              type="text"
+            />
             <CustomSpanForm>
               Color del vehículo<CustomSymbolForm>*</CustomSymbolForm>
             </CustomSpanForm>
           </CustomInput>
 
           <CustomInput $widthInput={"30%"}>
-            <CustomInputForm type="text" />
+            <InputController
+              control={control}
+              rules={{ required: "Campo requerido" }}
+              name="precio"
+              type="text"
+            />
             <CustomSpanForm>
               Precio del vehículo<CustomSymbolForm>*</CustomSymbolForm>
             </CustomSpanForm>
           </CustomInput>
         </SecondRowForm>
 
-        <BtnSubmit>Enviar</BtnSubmit>
+        <BtnSubmit onClick={handleSubmit(handlerRegister)}>Enviar</BtnSubmit>
       </ContainerForm>
     </>
   );

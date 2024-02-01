@@ -118,7 +118,7 @@ const TitleFrom = styled.p`
 `;
 
 const FirstRowForm = styled.div`
-  box-shadow: 0px 2px 5px -2px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 3px 0px -2px rgba(0, 0, 0, 0.15);
   padding-bottom: 30px;
   margin-bottom: 16px;
   display: flex;
@@ -130,21 +130,21 @@ const FirstRowForm = styled.div`
   }
 `;
 
-const CustomInput = styled.div<{ $widthInput?: string }>`
+const CustomInput = styled.div<{ $widthInput?: string; $disabled?: boolean }>`
   height: 56px;
   border: none;
-  border: 2px solid #002eff;
+  border: ${(props) =>
+    props.$disabled ? "2px solid #A8A8A8" : "2px solid #002eff"};
   border-radius: 8px;
   width: ${(props) => props.$widthInput};
 
   @media (max-width: 768px) {
-    width: ${
-      (props) => props.$widthInput === "30%" 
-        ? "100%" 
+    width: ${(props) =>
+      props.$widthInput === "30%"
+        ? "100%"
         : props.$widthInput === "65%"
         ? "55%"
-        : "40%"
-    };
+        : "40%"};
   }
 
   @media (max-width: 425px) {
@@ -166,7 +166,7 @@ const CustomInputForm = styled.input`
   line-height: 24px;
 `;
 
-const CustomSelectForm = styled.select`
+const CustomSelectForm = styled.select<{ $disabled?: boolean }>`
   height: 50px;
   width: 90%;
   border: none;
@@ -179,15 +179,21 @@ const CustomSelectForm = styled.select`
   font-family: Barlow Medium;
   line-height: 24px;
   background-color: #fff;
+  cursor: ${(props) => (props.$disabled ? "pointer" : "default")};
 `;
 
-const CustomSpanForm = styled.span`
+const CustomOptionSelect = styled.option`
+  background-color: #fff;
+  cursor: pointer;
+`
+
+const CustomSpanForm = styled.span<{ $disabled?: boolean }>`
   background-color: #fff;
   position: relative;
   left: 20px;
   bottom: 110%;
   padding: 0px 14px;
-  color: #002eff;
+  color: ${(props) => (props.$disabled ? "#A8A8A8" : "#002eff")};
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
@@ -199,10 +205,11 @@ const CustomSymbolForm = styled.span`
 `;
 
 const SecondRowForm = styled.div`
-  box-shadow: 0px 2px 5px -2px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 3px 0px -2px rgba(0, 0, 0, 0.15);
   margin-bottom: 16px;
   display: flex;
   gap: 30px;
+  padding-bottom: 30px;
   flex-wrap: wrap;
 `;
 
@@ -217,18 +224,18 @@ const BtnSubmit = styled.button`
   font-size: 16px;
   font-weight: 600;
   line-height: 24px;
-  letter-spacing: .2px;
+  letter-spacing: 0.2px;
   color: #fff;
   position: absolute;
   right: 0px;
   cursor: pointer;
 
   &:hover {
-    background-color: rgba(0, 46, 255, .9);
+    background-color: rgba(0, 46, 255, 0.9);
   }
 
   &:active {
-    background-color: rgba(0, 46, 255, .6);
+    background-color: rgba(0, 46, 255, 0.6);
   }
 
   @media (max-width: 768px) {
@@ -242,7 +249,7 @@ const BtnSubmit = styled.button`
     left: 50%;
     transform: translateX(-50%);
   }
-`
+`;
 
 export {
   Container,
@@ -258,6 +265,7 @@ export {
   CustomInput,
   CustomInputForm,
   CustomSelectForm,
+  CustomOptionSelect,
   CustomSpanForm,
   CustomSymbolForm,
   SecondRowForm,

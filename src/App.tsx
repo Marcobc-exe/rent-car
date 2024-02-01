@@ -1,15 +1,15 @@
-// import { Provider } from "react-redux";
-// import store from "./store";
+import { Provider } from "react-redux";
+import store from "./store";
 import { HashRouter } from "react-router-dom";
 import { AppRouter } from "./routes/AppRouter";
 
 const App = () => {
   return (
-    // <Provider store={store}>
+    <Provider store={store}>
       <HashRouter>
         <AppRouter />
       </HashRouter>
-    // </Provider>
+    </Provider>
   );
 };
 
